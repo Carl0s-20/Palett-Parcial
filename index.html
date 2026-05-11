@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Pallet</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:Arial, sans-serif;
+      background:#f2f2f2;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .container{
+      background:white;
+      width:420px;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 0 15px rgba(0,0,0,0.15);
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:25px;
+      color:#333;
+    }
+
+    label{
+      font-weight:bold;
+      display:block;
+      margin-bottom:8px;
+      margin-top:15px;
+    }
+
+    select,
+    input{
+      width:100%;
+      padding:12px;
+      border:1px solid #ccc;
+      border-radius:8px;
+      font-size:16px;
+    }
+
+    .resultado{
+      margin-top:25px;
+      background:#eeeeee;
+      padding:18px;
+      border-radius:10px;
+      font-size:18px;
+      line-height:1.8;
+    }
+
+    .destaque{
+      font-weight:bold;
+      color:#1b5e20;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Calculadora de Pallet</h1>
+
+    <label>Mercado:</label>
+
+    <select id="mercado" onchange="calcular()">
+
+      <option value="">Selecione</option>
+
+      <option value="280|14">
+        Estados Unidos - 280 caixas 4kg
+      </option>
+
+      <option value="252|12">
+        Europa - 252 caixas 4kg
+      </option>
+
+      <option value="54|6">
+        M.I (Mercado Interno) - 54 caixas 18kg
+      </option>
+
+    </select>
+
+    <label>Sobra na Câmara:</label>
+
+    <input
+      type="number"
+      id="sobra"
+      placeholder="Digite a sobra"
+      oninput="calcular()"
+    >
+
+    <div class="resultado" id="resultado">
+      Aguardando dados...
+    </div>
+
+  </div>
+
+  <script>
+
+    function calcular(){
+
+      let mercado =
+        document.getElementById("mercado").value;
+
+      let sobra =
+        Number(document.getElementById("sobra").value);
+
+      let resultado =
+        document.getElementById("resultado");
+
+      // VALIDAÇÃO
+      if(
+        mercado === "" ||
+        sobra <= 0
+      ){
+        resultado.innerHTML =
+          "Aguardando dados...";
+        return;
+      }
+
+      // SEPARA OS VALORES
+      let dados = mercado.split("|");
+
+      let palletCompleto =
+        Number(dados[0]);
+
+      let caixasPorBase =
+        Number(dados[1]);
+
+      // CÁLCULO
+      let parcial =
+        palletCompleto - sobra;
+
+      let camadas =
+        Math.floor(parcial / caixasPorBase);
+
+      let resto =
+        parcial % caixasPorBase;
+
+      // RESULTADO
+      let texto = `
+        <div>
+          Parcial necessária:
+          <span class="destaque">
+            ${parcial} caixas
+          </span>
+        </div>
+      `;
+
+      if(resto === 0){
+
+        texto += `
+          <div>
+            Altura:
+            <span class="destaque">
+              ${camadas}
+            </span>
+          </div>
+        `;
+
+      }else{
+
+        texto += `
+          <div>
+            Altura:
+            <span class="destaque">
+              ${camadas} + ${resto}
+            </span>
+          </div>
+        `;
+      }
+
+      resultado.innerHTML = texto;
+    }
+
+  </script>
+
+</body>
+</html>
