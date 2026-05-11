@@ -62,6 +62,11 @@
       line-height:1.8;
     }
 
+    .erro{
+      color:red;
+      font-weight:bold;
+    }
+
     .destaque{
       font-weight:bold;
       color:#1b5e20;
@@ -83,15 +88,15 @@
       <option value="">Selecione</option>
 
       <option value="280|14">
-        Estados Unidos - 280 caixas 4kg
+        Estados Unidos - 280 caixas (base 14)
       </option>
 
       <option value="252|12">
-        Europa - 252 caixas 4kg
+        Europa - 252 caixas (base 12)
       </option>
 
       <option value="54|6">
-        M.I (Mercado Interno) - 54 caixas 18kg
+        M.I (Mercado Interno) - 54 caixas (base 6)
       </option>
 
     </select>
@@ -124,17 +129,17 @@
       let resultado =
         document.getElementById("resultado");
 
-      // VALIDAÇÃO
+      // VALIDAÇÃO INICIAL
       if(
         mercado === "" ||
-        sobra <= 0
+        document.getElementById("sobra").value === ""
       ){
         resultado.innerHTML =
           "Aguardando dados...";
         return;
       }
 
-      // SEPARA OS VALORES
+      // SEPARA DADOS
       let dados = mercado.split("|");
 
       let palletCompleto =
@@ -142,6 +147,31 @@
 
       let caixasPorBase =
         Number(dados[1]);
+
+      // VALIDAÇÃO DE LIMITE
+      if(sobra > palletCompleto){
+
+        resultado.innerHTML = `
+          <span class="erro">
+            ERRO: A sobra não pode ser maior que
+            ${palletCompleto} caixas.
+          </span>
+        `;
+
+        return;
+      }
+
+      // VALIDAÇÃO NEGATIVA
+      if(sobra < 0){
+
+        resultado.innerHTML = `
+          <span class="erro">
+            ERRO: Digite um valor válido.
+          </span>
+        `;
+
+        return;
+      }
 
       // CÁLCULO
       let parcial =
