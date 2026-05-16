@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Pallet</title>
+  <title>PalletCalc Export</title>
 
   <style>
 
@@ -16,60 +16,159 @@
 
     body{
       font-family:Arial, sans-serif;
-      background:#f2f2f2;
-      height:100vh;
+      background:#111827;
+      color:white;
+      min-height:100vh;
       display:flex;
       justify-content:center;
       align-items:center;
+      padding:20px;
     }
 
     .container{
-      background:white;
-      width:420px;
+      width:100%;
+      max-width:600px;
+      background:#1f2937;
       padding:30px;
-      border-radius:12px;
-      box-shadow:0 0 15px rgba(0,0,0,0.15);
+      border-radius:20px;
+      box-shadow:0 0 25px rgba(0,0,0,0.4);
     }
 
-    h1{
+    .titulo{
       text-align:center;
-      margin-bottom:25px;
-      color:#333;
+      margin-bottom:30px;
+    }
+
+    .titulo h1{
+      font-size:32px;
+      margin-bottom:10px;
+      color:#22c55e;
+    }
+
+    .titulo p{
+      color:#9ca3af;
+      font-size:15px;
     }
 
     label{
-      font-weight:bold;
       display:block;
+      margin-top:20px;
       margin-bottom:8px;
-      margin-top:15px;
+      font-weight:bold;
+      color:#d1d5db;
     }
 
     select,
     input{
       width:100%;
-      padding:12px;
-      border:1px solid #ccc;
-      border-radius:8px;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      background:#374151;
+      color:white;
       font-size:16px;
+      outline:none;
     }
 
-    .resultado{
-      margin-top:25px;
-      background:#eeeeee;
-      padding:18px;
-      border-radius:10px;
+    select:focus,
+    input:focus{
+      border:2px solid #22c55e;
+    }
+
+    button{
+      width:100%;
+      margin-top:20px;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      background:#22c55e;
+      color:white;
       font-size:18px;
-      line-height:1.8;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      background:#16a34a;
+    }
+
+    .cards{
+      margin-top:30px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:15px;
+    }
+
+    .card{
+      background:#374151;
+      padding:20px;
+      border-radius:16px;
+      text-align:center;
+    }
+
+    .card h2{
+      font-size:15px;
+      color:#9ca3af;
+      margin-bottom:10px;
+    }
+
+    .valor{
+      font-size:32px;
+      font-weight:bold;
+      color:#22c55e;
     }
 
     .erro{
-      color:red;
+      margin-top:20px;
+      background:#7f1d1d;
+      padding:15px;
+      border-radius:12px;
+      color:#fecaca;
+      text-align:center;
       font-weight:bold;
     }
 
-    .destaque{
-      font-weight:bold;
-      color:#1b5e20;
+    .historico{
+      margin-top:35px;
+    }
+
+    .historico h2{
+      margin-bottom:15px;
+      color:#22c55e;
+    }
+
+    .item-historico{
+      background:#374151;
+      padding:15px;
+      border-radius:12px;
+      margin-bottom:10px;
+      border-left:5px solid #22c55e;
+      line-height:1.7;
+    }
+
+    .hora{
+      color:#9ca3af;
+      font-size:13px;
+    }
+
+    .footer{
+      margin-top:30px;
+      text-align:center;
+      color:#6b7280;
+      font-size:14px;
+    }
+
+    @media(max-width:500px){
+
+      .cards{
+        grid-template-columns:1fr;
+      }
+
+      .valor{
+        font-size:28px;
+      }
+
     }
 
   </style>
@@ -79,71 +178,126 @@
 
   <div class="container">
 
-    <h1>Calculadora de Pallet</h1>
+    <div class="titulo">
+      <h1>📦 PalletCalc Export</h1>
+      <p>Sistema de cálculo logístico de pallets</p>
+    </div>
 
-    <label>Mercado:</label>
+    <label>🌎 Mercado</label>
 
-    <select id="mercado" onchange="calcular()">
+    <select id="mercado">
 
-      <option value="">Selecione</option>
+      <option value="">Selecione o mercado</option>
 
-      <option value="280|14">
-        Estados Unidos - 280 caixas - 4kg
+      <option value="280|14|🇺🇸 Estados Unidos">
+        🇺🇸 Estados Unidos
       </option>
 
-      <option value="252|12">
-        Europa - 252 caixas - 4kg
+      <option value="252|12|🇪🇺 Europa">
+        🇪🇺 Europa
       </option>
 
-      <option value="216|12">
-        Chile - 216 caixas - 4kg
+      <option value="216|12|🇨🇱 Chile">
+        🇨🇱 Chile
       </option>
 
-      <option value="54|6">
-        M.I (Mercado Interno) - 54 caixas - 18kg
+      <option value="54|6|🇧🇷 Mercado Interno">
+        🇧🇷 Mercado Interno
       </option>
 
     </select>
 
-    <label>Sobra na Câmara:</label>
+    <label>❄️ Sobra na Câmara</label>
 
     <input
       type="number"
       id="sobra"
-      placeholder="Digite a sobra"
-      oninput="calcular()"
+      placeholder="Digite a quantidade"
     >
 
-    <div class="resultado" id="resultado">
-      Aguardando dados...
+    <button onclick="calcular()">
+      Calcular
+    </button>
+
+    <div id="erro"></div>
+
+    <div class="cards">
+
+      <div class="card">
+
+        <h2>📦 Parcial Necessária</h2>
+
+        <div class="valor" id="parcial">
+          --
+        </div>
+
+      </div>
+
+      <div class="card">
+
+        <h2>📊 Altura</h2>
+
+        <div class="valor" id="altura">
+          --
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="historico">
+
+      <h2>🕘 Histórico</h2>
+
+      <div id="listaHistorico">
+
+      </div>
+
+    </div>
+
+    <div class="footer">
+      Sistema de Controle de Pallets
+      <br>
+      Desenvolvido por Carlos Rodrigues
     </div>
 
   </div>
 
   <script>
 
+    let historico = [];
+
     function calcular(){
 
       let mercado =
         document.getElementById("mercado").value;
 
-      let sobra =
-        Number(document.getElementById("sobra").value);
+      let sobraInput =
+        document.getElementById("sobra").value;
 
-      let resultado =
-        document.getElementById("resultado");
+      let erro =
+        document.getElementById("erro");
 
-      // VALIDAÇÃO INICIAL
+      erro.innerHTML = "";
+
+      // VALIDAÇÃO
       if(
         mercado === "" ||
-        document.getElementById("sobra").value === ""
+        sobraInput === ""
       ){
-        resultado.innerHTML =
-          "Aguardando dados...";
+
+        erro.innerHTML = `
+          <div class="erro">
+            Preencha todos os campos.
+          </div>
+        `;
+
         return;
       }
 
-      // SEPARA DADOS
+      let sobra = Number(sobraInput);
+
+      // DADOS
       let dados = mercado.split("|");
 
       let palletCompleto =
@@ -152,32 +306,34 @@
       let caixasPorBase =
         Number(dados[1]);
 
-      // VALIDAÇÃO DE LIMITE
-      if(sobra > palletCompleto){
+      let nomeMercado =
+        dados[2];
 
-        resultado.innerHTML = `
-          <span class="erro">
-            ERRO: A sobra não pode ser maior que
-            ${palletCompleto} caixas.
-          </span>
-        `;
-
-        return;
-      }
-
-      // VALIDAÇÃO NEGATIVA
+      // VALIDAÇÕES
       if(sobra < 0){
 
-        resultado.innerHTML = `
-          <span class="erro">
-            ERRO: Digite um valor válido.
-          </span>
+        erro.innerHTML = `
+          <div class="erro">
+            Digite um valor válido.
+          </div>
         `;
 
         return;
       }
 
-      // CÁLCULO
+      if(sobra > palletCompleto){
+
+        erro.innerHTML = `
+          <div class="erro">
+            A sobra não pode ser maior que
+            ${palletCompleto} caixas.
+          </div>
+        `;
+
+        return;
+      }
+
+      // CÁLCULOS
       let parcial =
         palletCompleto - sobra;
 
@@ -187,43 +343,60 @@
       let resto =
         parcial % caixasPorBase;
 
-      // RESULTADO
-      let texto = `
-        <div>
-          Parcial necessária:
-          <span class="destaque">
-            ${parcial} caixas
-          </span>
+      // ALTURA
+      let altura = "";
+
+      if(resto === 0){
+        altura = camadas;
+      }else{
+        altura = `${camadas} + ${resto}`;
+      }
+
+      // MOSTRA RESULTADOS
+      document.getElementById("parcial")
+        .innerHTML = parcial;
+
+      document.getElementById("altura")
+        .innerHTML = altura;
+
+      // HORA
+      let agora = new Date();
+
+      let hora =
+        agora.toLocaleTimeString("pt-BR");
+
+      // HISTÓRICO
+      let registro = `
+        <div class="item-historico">
+
+          <strong>${nomeMercado}</strong>
+
+          <div class="hora">
+            ${hora}
+          </div>
+
+          ❄️ Sobra: ${sobra} caixas<br>
+
+          📦 Parcial: ${parcial} caixas<br>
+
+          📊 Altura: ${altura}
+
         </div>
       `;
 
-      if(resto === 0){
+      historico.unshift(registro);
 
-        texto += `
-          <div>
-            Altura:
-            <span class="destaque">
-              ${camadas}
-            </span>
-          </div>
-        `;
-
-      }else{
-
-        texto += `
-          <div>
-            Altura:
-            <span class="destaque">
-              ${camadas} + ${resto}
-            </span>
-          </div>
-        `;
+      // LIMITA HISTÓRICO
+      if(historico.length > 5){
+        historico.pop();
       }
 
-      resultado.innerHTML = texto;
+      document.getElementById("listaHistorico")
+        .innerHTML = historico.join("");
     }
 
   </script>
 
 </body>
+
 </html>
