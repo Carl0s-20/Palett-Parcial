@@ -197,12 +197,12 @@
         🇪🇺 Europa
       </option>
 
-      <option value="216|12|🇨🇱 Chile">
-        🇨🇱 Chile
+      <option value="216|12|🇨🇱🇦🇷 Chile - Argentina (4kg)">
+        🇨🇱 Chile - 🇦🇷 Argentina (4kg)
       </option>
 
-      <option value="54|6|🇧🇷 Mercado Interno">
-        🇧🇷 Mercado Interno
+      <option value="54|6|🇧🇷🇦🇷 M.I - Argentina (18kg)">
+        🇧🇷 M.I - 🇦🇷 Argentina (18kg)
       </option>
 
     </select>
@@ -394,6 +394,15 @@
       document.getElementById("listaHistorico")
         .innerHTML = historico.join("");
     }
+
+    // ENTER EXECUTA O CÁLCULO
+    document.addEventListener("keydown", function(event){
+
+      if(event.key === "Enter"){
+        calcular();
+      }
+
+    });
 
   </script>
 
