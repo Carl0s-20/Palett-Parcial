@@ -193,6 +193,10 @@
         🇺🇸 Estados Unidos
       </option>
 
+      <option value="360|5|🇺🇸 Estados Unidos (2,5kg)|2.5">
+        🇺🇸 Estados Unidos (2,5kg)
+      </option>
+
       <option value="252|12|🇪🇺 Europa">
         🇪🇺 Europa
       </option>
@@ -239,6 +243,16 @@
 
         <div class="valor" id="altura">
           --
+        </div>
+
+      </div>
+
+      <div class="card" id="cardMontagem" style="display:none;">
+
+        <h2>📋 Observação</h2>
+
+        <div class="valor" id="montagem" style="font-size:18px; line-height:1.5;">
+        --
         </div>
 
       </div>
@@ -309,6 +323,8 @@
       let nomeMercado =
         dados[2];
 
+      let tipo = dados[3] || "normal";
+
       // VALIDAÇÕES
       if(sobra < 0){
 
@@ -333,31 +349,93 @@
         return;
       }
 
-      // CÁLCULOS
-      let parcial =
-        palletCompleto - sobra;
+      //=========================
+      // CÁLCULO DA PARCIAL
+      //=========================
 
-      let camadas =
-        Math.floor(parcial / caixasPorBase);
+      let parcial = palletCompleto - sobra;
 
-      let resto =
-        parcial % caixasPorBase;
-
-      // ALTURA
       let altura = "";
 
-      if(resto === 0){
-        altura = camadas;
+      // Variáveis extras (2,5kg)
+      let caixasMaiores = 0;
+      let completas = 0;
+      let ultimaCaixa = 0;
+
+      if(tipo === "2.5"){
+
+        // Cada caixa maior possui 8 caixas de 2,5kg
+
+        caixasMaiores = Math.ceil(parcial / 8);
+
+        completas = Math.floor(parcial / 8) 
+
+        ultimaCaixa = parcial % 8;
+
+        let camadas = Math.floor(caixasMaiores / 5);
+
+        let resto = caixasMaiores % 5;
+
+        if(resto === 0){
+          altura = camadas;
+        }else{
+          altura = `${camadas} + ${resto}`;
+        }
+
       }else{
-        altura = `${camadas} + ${resto}`;
+
+          let camadas =
+            Math.floor(parcial / caixasPorBase);
+
+          let resto =
+            parcial % caixasPorBase;
+
+          if(resto === 0){
+            altura = camadas;
+          }else{
+            altura = `${camadas} + ${resto}`;
+          }
+
       }
 
       // MOSTRA RESULTADOS
-      document.getElementById("parcial")
-        .innerHTML = parcial;
 
-      document.getElementById("altura")
-        .innerHTML = altura;
+      let cardMontagem = document.getElementById("cardMontagem");
+      let montagem = document.getElementById("montagem");
+
+      if(tipo === "2.5"){
+
+        // Card Parcial
+        document.getElementById("parcial").innerHTML =
+          `${parcial}<br><span style="font-size:18px;">caixas de 2,5 kg</span>`;
+
+        // Card Observação
+        if(ultimaCaixa > 0){
+
+          cardMontagem.style.display = "block";
+
+          montagem.innerHTML = `
+            Deixar a última caixa
+            <br>
+            com <strong>${ultimaCaixa} caixas de 2,5 kg</strong>.
+          `;
+
+        }else{
+
+          cardMontagem.style.display = "none";
+
+        } 
+
+      }else{
+
+        // Esconde o card para todos os outros mercados
+        cardMontagem.style.display = "none";
+
+        document.getElementById("parcial").innerHTML = parcial;
+
+      }
+
+      document.getElementById("altura").innerHTML = altura;
 
       // HORA
       let agora = new Date();
